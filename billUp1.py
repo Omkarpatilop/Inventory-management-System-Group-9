@@ -11,7 +11,7 @@ class Bill_App:
         self.root.resizable(1,1)
         self.root.title("Billing Software")
         bg_titlecolor="navy"
-        bg_color="turquoise4"
+        bg_color="RoyalBlue3"
         title=Label(self.root,bd=12,relief=GROOVE,bg=bg_titlecolor,fg="white",text="Billing Software",font=("times new roman",30,"bold"),pady=2).pack(fill=X)
 
         #=============Variables==================#
