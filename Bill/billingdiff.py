@@ -341,10 +341,6 @@ class Bill_Application:
 
         self.CPaycash= self.grand_total
         self.CPayVar.set(str(self.CPaycash))
-        
-        #if self.CPaycash != 0:
-            #self.cashreturn = self.CPaycash - self.grand_total
-            #self.CReturnVar.set(str(self.cashreturn))
 
         self.cashreturn =  self.grand_total - self.CPaycash
         self.CReturnVar.set(str(self.cashreturn))
