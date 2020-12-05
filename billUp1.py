@@ -7,12 +7,12 @@ from datetime import datetime
 class Bill_App:
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1350x800+0+0")
+        self.root.geometry("1600x800+0+0")
         self.root.resizable(1,1)
         self.root.title("Billing Software")
         bg_titlecolor="navy"
         bg_color="RoyalBlue3"
-        title=Label(self.root,bd=12,relief=GROOVE,bg=bg_titlecolor,fg="white",text="Billing Software",font=("times new roman",30,"bold"),pady=2).pack(fill=X)
+        title=Label(self.root,bd=12,relief=GROOVE,bg=bg_titlecolor,fg="white",text="BUYERS'S WINOW",font=("times new roman",30,"bold"),pady=2).pack(fill=X)
 
         #=============Variables==================#
         #=========Search Field=============#
@@ -59,7 +59,7 @@ class Bill_App:
 
         item_no_lbl=Label(F2,text="Item Name.",font=("times new roman",16,"bold"),bg=bg_color,fg="lightgreen").grid(row=0,column=0,padx=0,pady=10,sticky="w")
         combo_search=ttk.Combobox(F2,textvariable=self.search_name,width=15 ,font=("times new roman",13,"bold"),state="readonly")
-        combo_search['values']=("Item No","Item Name")
+        combo_search['values']=self.combo_value()
         combo_search.grid(row=0,column=1, padx=20,pady=10)
 
         #Button for search using item no.
@@ -120,7 +120,7 @@ class Bill_App:
         #=================Bill Area==================#
 
         F5=LabelFrame(self.root,bd=10,relief=GROOVE)
-        F5.place(x=1010,y=160,width=340,height=380)
+        F5.place(x=1010,y=170,width=500,height=370)
         bill_title=Label(F5,text="Bill Area",font="arial 15 bold", bd=7,relief=GROOVE).pack(fill=X)
 
         scrol_y=Scrollbar(F5,orient=VERTICAL)
@@ -324,13 +324,13 @@ class Bill_App:
         c_phone=rows[0][2]
         self.txtarea.delete('1.0',END)
         self.txtarea.delete('1.0',END)
-        self.txtarea.insert(END,"\tWelcome to My Shop")
-        self.txtarea.insert(END,f"\n Bill Number: {inv_id}")
-        self.txtarea.insert(END,f"\n Bill Date: {inv_date}")
-        self.txtarea.insert(END,f"\n Customer Name: {c_name}")
-        self.txtarea.insert(END,f"\n Phone Number: {c_phone}")
-        self.txtarea.insert(END,f"\n=======================================")
-        self.txtarea.insert(END,f"\nS.No  \tItem Name\t\t   Qty \tPrice")
+        self.txtarea.insert(END,"\t\t\t\t\t\tWelcome to My Shop")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t Bill Number: {inv_id}")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t\t Bill Date: {inv_date}")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t\t Customer Name: {c_name}")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t\t Phone Number: {c_phone}")
+        self.txtarea.insert(END,f"\n===================================================")
+        self.txtarea.insert(END,f"\nS.No  \t\t\\tItem Name\t\t\t\t\t   Qty \t\t\tPrice")
         self.txtarea.insert(END,f"\n=======================================")
 
         cur.execute(f"select * from sales_stocks where inv_id={inv_id}")
@@ -344,18 +344,89 @@ class Bill_App:
             total=total+row[2]*temp[0][3]
             i=i+1
         self.txtarea.insert(END,f"\n=======================================")
-        self.txtarea.insert(END,f"\n\t\t     Subtotal Rs. {total}")
-        self.txtarea.insert(END,f"\n\t\t     Sales Tax Rs. {0.18*total}")
-        self.txtarea.insert(END,"\n---------------------------------------")
-        self.txtarea.insert(END,f"\n\t\t\tTotal Rs.  {total+0.18*total}")
-        self.txtarea.insert(END,"\n---------------------------------------")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t     Subtotal Rs. {total}     ")
+        self.txtarea.insert(END,f"\n\t\t\t\t\t     Sales Tax Rs. {0.18*total}")
+        self.txtarea.insert(END,"\n------------------------------------------------------")
+        self.txtarea.insert(END,f"\n\t\t\t\t\tTotal Rs.  {total+0.18*total}")
+        self.txtarea.insert(END,"\n-------------------------------------------------------")
         self.txtarea.insert(END,"\n\n\n\n\n\n\n\n\n-----------Thanks for shopping------------")
 
     def openStock(self):
-        from ims_stock import Stock
-        for widget in self.root.winfo_children():
-            widget.destroy()
-        self.root=Stock(self.root)
+        #ms_stock import Stock
+        #for widget in self.root.winfo_children():
+            #idget.destroy()
+        #self.root=Stock(self.root)
+        self.root2=Toplevel()
+        self.root2.geometry("770x520")
+
+        self.table_frame=Frame(self.root2,bd=4,relief=RIDGE,bg="ivory")
+        self.table_frame.place(x=10,y=30,width=760,height=490)
+        
+        scroll_x=Scrollbar(self.table_frame,orient=HORIZONTAL)
+        scroll_y=Scrollbar(self.table_frame,orient=VERTICAL)
+        self.invent_table=ttk.Treeview(self.table_frame,columns=("PRODUCT ID","PRODUCT NAME","QUANTITY","PRICE"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        scroll_x.pack(side=BOTTOM,fill=X)
+        scroll_y.pack(side=RIGHT,fill=Y)
+        scroll_x.config(command=self.invent_table.xview)
+        scroll_y.config(command=self.invent_table.yview)
+        self.invent_table.heading("PRODUCT ID",text="PRODUCT ID:")
+        self.invent_table.heading("PRODUCT NAME",text="PRODUCT NAME:")
+        self.invent_table.heading("QUANTITY",text="QUANTITY:")
+        self.invent_table.heading("PRICE",text="PRICE:")
+        #self.invent_table.heading("TOTAL",text="TOTAL:")
+        self.invent_table['show']='headings'
+        self.invent_table.column("PRODUCT ID",width=70)
+        self.invent_table.column("PRODUCT NAME",width=200)
+        self.invent_table.column("QUANTITY",width=150)
+        self.invent_table.column("PRICE",width=150)
+        #self.invent_table.column("TOTAL",width=150)
+
+        self.invent_table.pack(fill=BOTH,expand=1)
+        self.invent_table.bind("<ButtonRelease-1>",self.get_cursor)
+        self.fetch_data()
+    def fetch_data(self): 
+        con=pymysql.connect(host="localhost",user="root",password="",database="inventory")
+        cur=con.cursor()
+        cur.execute("select product_id,product_name,product_qty,product_price,total from inventory")
+        rows=cur.fetchall()
+        if len(rows)!=0:
+            self.invent_table.delete(*self.invent_table.get_children())
+            for row in rows:
+                self.invent_table.insert('',END,values=row)
+                con.commit()
+        con.close()
+    def get_cursor(self,ev):
+        cursor_row=self.invent_table.focus()
+        content=self.invent_table.item(cursor_row)
+        row=content['values']
+        self.product_id.set(row[1])
+        self.product_name.set(row[2])
+        self.product_qty.set(row[3])
+    def combo_value(self):
+        con=pymysql.connect(host="localhost",user="root",password="",database="inventory")
+        cur=con.cursor()
+        cur.execute("select product_name from inventory")
+        result = []
+
+        for row in cur.fetchall():
+            result.append(row[0])
+
+        return result
+    def search_item(self):
+        con=pymysql.connect(host="localhost",user="root",password="",database="inventory")
+        cur=con.cursor()
+        
+        statement=f"select product_id,product_name,product_qty,product_price from inventory where product_name='{self.search_name.get()}'"
+        cur.execute(statement)
+        self.invent_table.delete(*self.invent_table.get_children())
+        rows=cur.fetchall()
+        if len(rows)!=0:
+            self.invent_table.delete(*self.invent_table.get_children())
+            for row in rows:
+                self.invent_table.insert('',END, values=row)
+            con.commit()
+        con.close()
+
 
 root=Tk()
 obb=Bill_App(root)
